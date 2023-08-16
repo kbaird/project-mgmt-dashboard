@@ -19,6 +19,18 @@ RSpec.describe Task, type: :model do
     end
   end
 
+  describe 'nesting' do
+    let(:big_task) { create(:task) }
+    let(:sub_task1) { create(:task, parent_id: big_task.id) }
+    let(:sub_task2) { create(:task, parent_id: big_task.id) }
+    let(:sub_task3) { create(:task, parent_id: big_task.id) }
+    it 'has sub_tasks' do
+      [sub_task1, sub_task2, sub_task3].each do |sub_task|
+        expect(big_task.sub_tasks).to include(sub_task)
+      end
+    end
+  end
+
   describe 'fields' do
     it { expect(task).to respond_to(:title) }
     it { expect(task).to respond_to(:description) }
