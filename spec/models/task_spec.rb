@@ -49,5 +49,23 @@ RSpec.describe Task, type: :model do
       expect { described_class.create!(status: 'foo') }.to raise_error(ArgumentError, /is not a valid status/)
     end
   end
+
+  describe '#complete' do
+    let(:pm) { create(:project_manager) }
+    let(:task) { create(:task, assigned_project_manager_id: pm.id) }
+    describe 'when given a current_user who is the owning ProjectManager' do
+      let(:current_user) { pm }
+      it 'updates the :status to :done' do
+        task.complete(current_user)
+        expect(task.reload.status).to eq('done')
+      end
+    end
+    describe 'when given a current_user who is not the owning ProjectManager' do
+      let(:current_user) { create(:project_manager) }
+      it 'raises a DisallowedError' do
+        expect { task.complete(current_user) }.to raise_error(DisallowedError)
+      end
+    end
+  end
 end
 # rubocop:enable Metrics/BlockLength
