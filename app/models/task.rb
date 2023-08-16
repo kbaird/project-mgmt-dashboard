@@ -2,7 +2,8 @@
 
 # A unit of work, assigned to an Employee
 class Task < ApplicationRecord
-  enum :status, %i[not_started working needs_review done late]
+  STATUSES = { not_started: 0, working: 1, needs_review: 2, done: 3, late: 4 }.freeze
+  enum :status, STATUSES
   has_many :sub_tasks, class_name: 'Task', foreign_key: 'parent_id'
 
   # The presumption is that we will pass the current_user from the controller in.
