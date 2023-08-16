@@ -4,8 +4,20 @@ require 'rails_helper'
 
 LEGAL_STATUSES = %i[not_started working needs_review done late].freeze
 
+# rubocop:disable Metrics/BlockLength
 RSpec.describe Task, type: :model do
   let(:task) { described_class.new }
+
+  describe 'associations' do
+    it 'can be assigned to an Employee' do
+      employee = build(:employee)
+      described_class.create!(assigned_employee_id: employee.id)
+    end
+    it 'can be assigned to a ProjectManager' do
+      pm = build(:project_manager)
+      described_class.create!(assigned_project_manager_id: pm.id)
+    end
+  end
 
   describe 'fields' do
     it { expect(task).to respond_to(:title) }
@@ -26,3 +38,4 @@ RSpec.describe Task, type: :model do
     end
   end
 end
+# rubocop:enable Metrics/BlockLength

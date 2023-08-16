@@ -13,7 +13,7 @@ RSpec.describe ProjectManager, type: :model do
 
   describe 'password' do
     it 'is hashed with bcrypt' do
-      pm = described_class.create(name: 'Sample PM', email: 'sample_pm@example.com', password: 'foobar')
+      pm = build(:project_manager)
       expect(pm.password_digest).not_to eq('foobar')
       expect(pm.authenticate('foobar')).to be(pm)
       expect(pm.authenticate('wrong_password')).to be(false)

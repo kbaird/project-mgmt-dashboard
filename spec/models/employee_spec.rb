@@ -15,13 +15,7 @@ RSpec.describe Employee, type: :model do
 
   describe 'password' do
     it 'is hashed with bcrypt' do
-      emp = described_class.create(
-        name: 'Sample PM',
-        email: 'sample_employee@example.com',
-        password: 'foobar',
-        title: 'Sample title',
-        work_focus: 'Research'
-      )
+      emp = build(:employee)
       expect(emp.password_digest).not_to eq('foobar')
       expect(emp.authenticate('foobar')).to be(emp)
       expect(emp.authenticate('wrong_password')).to be(false)
