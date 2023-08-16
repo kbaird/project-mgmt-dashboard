@@ -12,10 +12,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 20_230_816_181_646) do
+ActiveRecord::Schema[7.0].define(version: 20_230_816_184_034) do
   # These are extensions that must be enabled in order to support this database
   enable_extension 'pgcrypto'
   enable_extension 'plpgsql'
+
+  create_table 'employees', id: :uuid, default: -> { 'gen_random_uuid()' }, force: :cascade do |t|
+    t.uuid 'project_manager_id', null: false
+    t.string 'name'
+    t.string 'title'
+    t.string 'email'
+    t.string 'password_digest'
+    t.string 'work_focus', comment: 'ex: development, design, business, research, etc.'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.index ['project_manager_id'], name: 'index_employees_on_project_manager_id'
+  end
 
   create_table 'project_managers', id: :uuid, default: -> { 'gen_random_uuid()' }, force: :cascade do |t|
     t.string 'name'
@@ -24,4 +36,6 @@ ActiveRecord::Schema[7.0].define(version: 20_230_816_181_646) do
     t.datetime 'created_at', null: false
     t.datetime 'updated_at', null: false
   end
+
+  add_foreign_key 'employees', 'project_managers'
 end
