@@ -10,6 +10,6 @@ class Task < ApplicationRecord
   def complete(current_user)
     raise DisallowedError if current_user.id != assigned_project_manager_id
 
-    update(status: :done)
+    done!
   end
 end
