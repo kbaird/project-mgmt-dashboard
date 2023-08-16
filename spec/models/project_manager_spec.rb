@@ -1,5 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe ProjectManager, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  let(:project_manager) { described_class.new }
+
+  describe 'fields' do
+    it { expect(project_manager).to respond_to(:name) }
+    it { expect(project_manager).to respond_to(:email) }
+    it { expect(project_manager).to respond_to(:password_digest) }
+  end
 end
