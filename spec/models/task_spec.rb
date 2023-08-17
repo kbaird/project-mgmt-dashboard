@@ -17,6 +17,10 @@ RSpec.describe Task, type: :model do
       pm = build(:project_manager)
       described_class.create!(assigned_project_manager_id: pm.id)
     end
+    it 'belongs to a Project' do
+      project = build(:project)
+      described_class.create!(project:)
+    end
   end
 
   describe 'nesting' do

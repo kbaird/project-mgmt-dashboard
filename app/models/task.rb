@@ -4,7 +4,9 @@
 class Task < ApplicationRecord
   STATUSES = { not_started: 0, working: 1, needs_review: 2, done: 3, late: 4 }.freeze
   enum :status, STATUSES
+
   has_many :sub_tasks, class_name: 'Task', foreign_key: 'parent_id'
+  belongs_to :project, optional: true
 
   scope :not_done, -> { where('status != ?', STATUSES[:done]) }
   scope :overdue, -> { where('due_at < ?', DateTime.now) }

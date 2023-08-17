@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_17_171524) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_17_172939) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -54,7 +54,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_17_171524) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "parent_id"
+    t.uuid "project_id"
+    t.index ["project_id"], name: "index_tasks_on_project_id"
   end
 
   add_foreign_key "employees", "project_managers"
+  add_foreign_key "tasks", "projects"
 end
