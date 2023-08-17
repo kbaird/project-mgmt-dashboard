@@ -6,6 +6,6 @@ class FlagTasksAsLateJob
   include Sidekiq::Job
 
   def perform
-    Task.overdue.update_all(status: 'late')
+    Task.not_done.overdue.update_all(status: 'late')
   end
 end

@@ -6,6 +6,7 @@ class Task < ApplicationRecord
   enum :status, STATUSES
   has_many :sub_tasks, class_name: 'Task', foreign_key: 'parent_id'
 
+  scope :not_done, -> { where('status != ?', STATUSES[:done]) }
   scope :overdue, -> { where('due_at < ?', DateTime.now) }
 
   # The presumption is that we will pass the current_user from the controller in.
