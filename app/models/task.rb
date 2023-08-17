@@ -11,10 +11,14 @@ class Task < ApplicationRecord
   scope :not_done, -> { where('status != ?', STATUSES[:done]) }
   scope :overdue, -> { where('due_at < ?', DateTime.now) }
 
+  ### TODO(kbaird): Only PM (assigned?) can create
+
   # The presumption is that we will pass the current_user from the controller in.
   def complete(current_user)
     raise DisallowedError if current_user.id != assigned_project_manager_id
 
     done!
   end
+
+  ### TODO(kbaird): Only assigned Employee(s) can set to working/needs_review
 end
