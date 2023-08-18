@@ -19,7 +19,9 @@ RSpec.describe '/tasks', type: :request do
   # Task. As you add validations to Task, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) do
-    skip('Add a hash of attributes valid for your model')
+    {
+      title: 'A Task'
+    }
   end
 
   let(:invalid_attributes) do
@@ -88,14 +90,15 @@ RSpec.describe '/tasks', type: :request do
   describe 'PATCH /update' do
     context 'with valid parameters' do
       let(:new_attributes) do
-        skip('Add a hash of attributes valid for your model')
+        {
+          status: 'done'
+        }
       end
 
       it 'updates the requested task' do
         task = Task.create! valid_attributes
         patch task_url(task), params: { task: new_attributes }
-        task.reload
-        skip('Add assertions for updated state')
+        assert task.reload.status == 'done'
       end
 
       it 'redirects to the task' do
