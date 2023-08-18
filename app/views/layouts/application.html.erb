@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ProjectMgmtDashboard</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  </head>
+
+  <body>
+    <%= yield %>
+    <ul>
+      <li>Currently logged in as <%= session[:email] %></li>
+      <li><%= link_to "List projects", projects_path %></li>
+      <li><%= link_to "List tasks", tasks_path %></li>
+      <li><%= link_to "Sign in", new_session_path %></li>
+    </ul>
+    <p>
+    Please sign in as either <code>sample_pm@example.com</code> or
+    <code>sample_employee@example.com</code>, both with password <code>foobar</code>.
+    Rather than destroying the session / logging out, I have been simply switching the user for now.
+    </p>
+    <p>
+    Please run <code>./bin/rails db:seed</code> ahead of time.<p>
+  </body>
+</html>
