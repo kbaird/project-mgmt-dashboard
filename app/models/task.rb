@@ -15,6 +15,10 @@ class Task < ApplicationRecord
     case task_params[:status]
     when 'done'
       complete(current_user_id)
+    when 'working'
+      get_started(current_user_id)
+    when 'needs_review'
+      require_review(current_user_id)
     else
       update(task_params)
     end
@@ -22,12 +26,21 @@ class Task < ApplicationRecord
 
   ### TODO(kbaird): Only PM can create
 
-  # The presumption is that we will pass the current_user from the controller in.
   def complete(current_user_id)
     raise DisallowedError if current_user_id != assigned_project_manager_id
 
     done!
   end
 
-  ### TODO(kbaird): Only assigned Employee(s) can set to working/needs_review
+  def require_review(current_user_id)
+    raise DisallowedError if current_user_id != assigned_employee_id
+
+    needs_review!
+  end
+
+  def get_started(current_user_id)
+    raise DisallowedError if current_user_id != assigned_employee_id
+
+    working!
+  end
 end

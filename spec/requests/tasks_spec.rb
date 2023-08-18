@@ -114,9 +114,26 @@ RSpec.describe '/tasks', type: :request do
         expect(response).to redirect_to(task_url(task))
       end
 
-      context 'when the User-Id does not match the assigned PM ID' do
+      ### TODO(kbaird): happy path spec
+      context "when the User-Id does not match the assigned PM ID and the status is 'done'" do
         it 'renders a forbidden response' do
           patch task_url(task), params: { task: new_attributes }, headers: { 'User-Id' => 'decoy' }
+          expect(response).to have_http_status(:forbidden)
+        end
+      end
+
+      ### TODO(kbaird): happy path spec
+      context "when the User-Id does not match the assigned Employee ID and the status is 'working'" do
+        it 'renders a forbidden response' do
+          patch task_url(task), params: { task: { status: 'working' } }, headers: { 'User-Id' => 'decoy' }
+          expect(response).to have_http_status(:forbidden)
+        end
+      end
+
+      ### TODO(kbaird): happy path spec
+      context "when the User-Id does not match the assigned Employee ID and the status is 'needs_review'" do
+        it 'renders a forbidden response' do
+          patch task_url(task), params: { task: { status: 'needs_review' } }, headers: { 'User-Id' => 'decoy' }
           expect(response).to have_http_status(:forbidden)
         end
       end
