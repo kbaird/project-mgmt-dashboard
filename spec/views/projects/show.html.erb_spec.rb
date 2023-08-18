@@ -15,4 +15,9 @@ RSpec.describe 'projects/show', type: :view do
     expect(rendered).to match(/Title/)
     expect(rendered).to match(/MyText/)
   end
+
+  it 'links to the Tasks' do
+    render
+    expect(rendered).to match(/List this project.*s Tasks/)
+  end
 end

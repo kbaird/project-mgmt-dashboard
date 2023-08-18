@@ -8,6 +8,7 @@ class SessionsController < ApplicationController
     @user = user
     if @user&.authenticate(session_params[:password])
       session[:user_id] = @user.id
+      session[:email] = @user.email
       redirect_to projects_url
     else
       flash[:notice] = 'Login is invalid!'

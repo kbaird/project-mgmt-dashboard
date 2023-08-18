@@ -18,8 +18,6 @@ RSpec.describe 'tasks/new', type: :view do
       assert_select 'input[name=?]', 'task[title]'
 
       assert_select 'textarea[name=?]', 'task[description]'
-
-      assert_select 'input[name=?]', 'task[status]'
     end
   end
 end

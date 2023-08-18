@@ -28,7 +28,7 @@
 
   <div>
     <%= form.label :status, style: "display: block" %>
-    <%= form.number_field :status %>
+    <%= form.select :status, options_for_select(Task.statuses.map {|key, value| [key.titleize, Task.statuses.key(value)]}, @task.status) %>
   </div>
 
   <div>
