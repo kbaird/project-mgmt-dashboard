@@ -15,11 +15,24 @@ require 'rails_helper'
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
 RSpec.describe '/employees', type: :request do
+  let(:project_manager) { create(:project_manager) }
+
+  let(:create_headers) do
+    {'project-manager-id' => project_manager.id}
+  end
+
   # This should return the minimal set of attributes required to create a valid
   # Employee. As you add validations to Employee, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) do
-    skip('Add a hash of attributes valid for your model')
+    {
+      name: 'MyString',
+      title: 'MyString',
+      email: 'MyString',
+      password: 'foobar',
+      work_focus: 'MyString',
+      project_manager_id: project_manager.id
+    }
   end
 
   let(:invalid_attributes) do
@@ -61,25 +74,38 @@ RSpec.describe '/employees', type: :request do
     context 'with valid parameters' do
       it 'creates a new Employee' do
         expect do
-          post employees_url, params: { employee: valid_attributes }
+          post employees_url, params: { employee: valid_attributes }, headers: create_headers
         end.to change(Employee, :count).by(1)
       end
 
       it 'redirects to the created employee' do
-        post employees_url, params: { employee: valid_attributes }
+        post employees_url, params: { employee: valid_attributes }, headers: create_headers
         expect(response).to redirect_to(employee_url(Employee.last))
+      end
+    end
+
+    context 'with valid parameters, but lacking the PM id in the headers' do
+      it 'does not create a new Employee' do
+        expect do
+          post employees_url, params: { employee: valid_attributes }
+        end.to change(Employee, :count).by(0)
+      end
+
+      it 'renders a forbidden response' do
+        post employees_url, params: { employee: valid_attributes }
+        expect(response).to have_http_status(:forbidden)
       end
     end
 
     context 'with invalid parameters' do
       it 'does not create a new Employee' do
         expect do
-          post employees_url, params: { employee: invalid_attributes }
+          post employees_url, params: { employee: invalid_attributes }, headers: create_headers
         end.to change(Employee, :count).by(0)
       end
 
       it "renders a response with 422 status (i.e. to display the 'new' template)" do
-        post employees_url, params: { employee: invalid_attributes }
+        post employees_url, params: { employee: invalid_attributes }, headers: create_headers
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
