@@ -62,12 +62,6 @@ class EmployeesController < ApplicationController
   private
 
   # Use callbacks to share common setup or constraints between actions.
-  def require_logged_in_as_project_manager
-    ProjectManager.find(current_user_id)
-  rescue ActiveRecord::RecordNotFound
-    raise DisallowedError
-  end
-
   def set_employee
     @employee = Employee.find(params[:id])
   end

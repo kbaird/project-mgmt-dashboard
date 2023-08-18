@@ -3,6 +3,7 @@
 # Provides shared functions to requests related to Tasks
 class TasksController < ApplicationController
   before_action :set_task, only: %i[show edit update destroy]
+  before_action :require_logged_in_as_project_manager, only: [:create]
 
   # GET /tasks or /tasks.json
   def index

@@ -24,8 +24,6 @@ class Task < ApplicationRecord
     end
   end
 
-  ### TODO(kbaird): Only PM can create
-
   def complete(current_user_id)
     raise DisallowedError if current_user_id != assigned_project_manager_id
 

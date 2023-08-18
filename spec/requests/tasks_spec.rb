@@ -17,7 +17,8 @@ require 'rails_helper'
 RSpec.describe '/tasks', type: :request do
   let(:project_manager) { create(:project_manager) }
 
-  let(:update_headers) do
+  # Needed for both create and some updates
+  let(:headers) do
     { 'User-Id' => project_manager.id }
   end
 
@@ -70,13 +71,26 @@ RSpec.describe '/tasks', type: :request do
     context 'with valid parameters' do
       it 'creates a new Task' do
         expect do
-          post tasks_url, params: { task: valid_attributes }
+          post tasks_url, params: { task: valid_attributes }, headers:
         end.to change(Task, :count).by(1)
       end
 
       it 'redirects to the created task' do
-        post tasks_url, params: { task: valid_attributes }
+        post(tasks_url, params: { task: valid_attributes }, headers:)
         expect(response).to redirect_to(task_url(Task.last))
+      end
+    end
+
+    context 'with valid parameters, but lacking the PM id in the headers' do
+      it 'does not create a new Task' do
+        expect do
+          post tasks_url, params: { task: valid_attributes }
+        end.to change(Task, :count).by(0)
+      end
+
+      it 'renders a forbidden response' do
+        post tasks_url, params: { task: valid_attributes }
+        expect(response).to have_http_status(:forbidden)
       end
     end
 
@@ -104,12 +118,12 @@ RSpec.describe '/tasks', type: :request do
       end
 
       it 'updates the requested task' do
-        patch task_url(task), params: { task: new_attributes }, headers: update_headers
+        patch(task_url(task), params: { task: new_attributes }, headers:)
         assert task.reload.status == 'done'
       end
 
       it 'redirects to the task' do
-        patch task_url(task), params: { task: new_attributes }, headers: update_headers
+        patch(task_url(task), params: { task: new_attributes }, headers:)
         task.reload
         expect(response).to redirect_to(task_url(task))
       end
