@@ -25,7 +25,11 @@ RSpec.describe '/projects', type: :request do
   # Project. As you add validations to Project, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) do
-    skip('Add a hash of attributes valid for your model')
+    {
+      title: 'Sample Project',
+      description: 'Could contain Tasks',
+      due_at: DateTime.now + 1.week
+    }
   end
 
   let(:invalid_attributes) do
@@ -78,15 +82,31 @@ RSpec.describe '/projects', type: :request do
     end
 
     context 'with valid parameters, but lacking the PM id in the headers' do
-      it 'does not create a new Task' do
-        expect do
-          post projects_url, params: { project: valid_attributes }
-        end.to change(Task, :count).by(0)
-      end
+      context 'when there is a valid session[:user_id] beforehand' do
+        it 'creates a new Project' do
+          expect do
+            post sessions_url, params: { email: project_manager.email, password: 'foobar' }
+            post projects_url, params: { project: valid_attributes }
+          end.to change(Project, :count).by(1)
+        end
 
-      it 'renders a forbidden response' do
-        post projects_url, params: { project: valid_attributes }
-        expect(response).to have_http_status(:forbidden)
+        it 'redirects to the created project' do
+          post sessions_url, params: { email: project_manager.email, password: 'foobar' }
+          post projects_url, params: { project: valid_attributes }
+          expect(response).to redirect_to(project_url(Project.last))
+        end
+      end
+      context 'when there is not a valid session[:user_id]' do
+        it 'does not create a new Task' do
+          expect do
+            post projects_url, params: { project: valid_attributes }
+          end.to change(Task, :count).by(0)
+        end
+
+        it 'renders a forbidden response' do
+          post projects_url, params: { project: valid_attributes }
+          expect(response).to have_http_status(:forbidden)
+        end
       end
     end
 

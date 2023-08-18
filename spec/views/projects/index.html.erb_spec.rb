@@ -22,4 +22,9 @@ RSpec.describe 'projects/index', type: :view do
     assert_select cell_selector, text: Regexp.new('Title'.to_s), count: 2
     assert_select cell_selector, text: Regexp.new('MyText'.to_s), count: 2
   end
+
+  it 'provides a link to Sign in' do
+    render
+    expect(rendered).to include('Sign in')
+  end
 end
