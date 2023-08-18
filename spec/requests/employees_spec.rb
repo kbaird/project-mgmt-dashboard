@@ -18,7 +18,7 @@ RSpec.describe '/employees', type: :request do
   let(:project_manager) { create(:project_manager) }
 
   let(:create_headers) do
-    {'project-manager-id' => project_manager.id}
+    { 'User-Id' => project_manager.id }
   end
 
   # This should return the minimal set of attributes required to create a valid

@@ -3,7 +3,7 @@
 # Provides shared functions to requests related to Employees
 class EmployeesController < ApplicationController
   before_action :set_employee, only: %i[show edit update destroy]
-  before_action :require_project_manager, only: [:create]
+  before_action :require_logged_in_as_project_manager, only: [:create]
 
   # GET /employees or /employees.json
   def index
@@ -62,10 +62,8 @@ class EmployeesController < ApplicationController
   private
 
   # Use callbacks to share common setup or constraints between actions.
-  def require_project_manager
-    ### TODO(kbaird): Use an expiring token that encodes the PM instead
-    pm_id = request.headers['Project-Manager-Id']
-    ProjectManager.find(pm_id)
+  def require_logged_in_as_project_manager
+    ProjectManager.find(current_user_id)
   rescue ActiveRecord::RecordNotFound
     raise DisallowedError
   end
@@ -76,6 +74,7 @@ class EmployeesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def employee_params
-    params.require(:employee).permit(:name, :title, :email, :password, :password_confirmation, :work_focus, :project_manager_id)
+    params.require(:employee).permit(:name, :title, :email, :password, :password_confirmation, :work_focus,
+                                     :project_manager_id)
   end
 end
