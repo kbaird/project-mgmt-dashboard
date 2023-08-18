@@ -60,14 +60,14 @@ RSpec.describe Task, type: :model do
     describe 'when given a current_user who is the owning ProjectManager' do
       let(:current_user) { pm }
       it 'updates the :status to :done' do
-        task.complete(current_user)
+        task.complete(current_user.id)
         expect(task.reload.status).to eq('done')
       end
     end
     describe 'when given a current_user who is not the owning ProjectManager' do
       let(:current_user) { create(:project_manager) }
       it 'raises a DisallowedError' do
-        expect { task.complete(current_user) }.to raise_error(DisallowedError)
+        expect { task.complete(current_user.id) }.to raise_error(DisallowedError)
       end
     end
   end
