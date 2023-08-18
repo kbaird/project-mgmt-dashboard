@@ -15,6 +15,12 @@ require 'rails_helper'
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
 RSpec.describe '/projects', type: :request do
+  let(:project_manager) { create(:project_manager) }
+
+  let(:create_headers) do
+    { 'User-Id' => project_manager.id }
+  end
+
   # This should return the minimal set of attributes required to create a valid
   # Project. As you add validations to Project, be sure to
   # adjust the attributes here as well.
@@ -61,13 +67,26 @@ RSpec.describe '/projects', type: :request do
     context 'with valid parameters' do
       it 'creates a new Project' do
         expect do
-          post projects_url, params: { project: valid_attributes }
+          post projects_url, params: { project: valid_attributes }, headers: create_headers
         end.to change(Project, :count).by(1)
       end
 
       it 'redirects to the created project' do
-        post projects_url, params: { project: valid_attributes }
+        post projects_url, params: { project: valid_attributes }, headers: create_headers
         expect(response).to redirect_to(project_url(Project.last))
+      end
+    end
+
+    context 'with valid parameters, but lacking the PM id in the headers' do
+      it 'does not create a new Task' do
+        expect do
+          post projects_url, params: { project: valid_attributes }
+        end.to change(Task, :count).by(0)
+      end
+
+      it 'renders a forbidden response' do
+        post projects_url, params: { project: valid_attributes }
+        expect(response).to have_http_status(:forbidden)
       end
     end
 

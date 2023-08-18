@@ -3,6 +3,7 @@
 # Provides shared functions to requests related to Projects
 class ProjectsController < ApplicationController
   before_action :set_project, only: %i[show edit update destroy]
+  before_action :require_logged_in_as_project_manager, only: [:create]
 
   # GET /projects or /projects.json
   def index
